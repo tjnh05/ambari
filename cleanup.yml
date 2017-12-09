@@ -1,0 +1,80 @@
+---
+# Cleanup ambari-server and ambari-agent
+# written by bodhi wang
+# bodwang@deloitte.com.cn
+# Dec 8, 2017
+- hosts: ambari_agent
+  become: yes
+  become_user: root
+
+
+  tasks:
+   - name: Stop ambari-agent service
+     service: 
+       name: "{{item}}"
+       state: stopped
+     with_items:
+       - ambari-agent
+      
+   - name: Remove installed packages.
+     yum:
+       name: "{{item}}"
+       state: absent
+     with_items:
+       - ambari-infra-solr-client
+       - ranger_2_6_0_3_8-hdfs-plugin
+       - hbase_2_6_0_3_8
+       - spark_2_6_0_3_8-yarn-shuffle
+       - hadoop_2_6_0_3_8
+       - snappy-devel
+       - ranger_2_6_0_3_8-yarn-plugin
+       - hadoop_2_6_0_3_8-client
+       - ambari-metrics-grafana
+       - hadoop_2_6_0_3_8-yarn
+       - zookeeper_2_6_0_3_8
+       - bigtop-jsvc
+       - hadoop_2_6_0_3_8-mapreduce
+       - ranger_2_6_0_3_8-hbase-plugin
+       - ambari-metrics-hadoop-sink
+       - ambari-metrics-monitor
+       - hadoop_2_6_0_3_8-libhdfs
+       - smartsense-hst
+       - hadoop_2_6_0_3_8-hdfs
+       - hdp-select
+       - spark2_2_6_0_3_8-yarn-shuffle
+       - ambari-metrics-collector
+       - zookeeper_2_6_0_3_8-server
+       - hive_2_6_0_3_8-hcatalog
+       - tez_2_6_0_3_8
+       - hive_2_6_0_3_8
+       - ranger_2_6_0_3_8-hive-plugin
+       - flume_2_6_0_3_8
+       - atlas-metadata_2_6_0_3_8-hive-plugin
+       - hive_2_6_0_3_8-webhcat
+       - hive_2_6_0_3_8-jdbc
+       - ambari-infra-solr
+
+   - name: Remove created users.
+     user:
+       name: "{{item}}"
+       state: absent
+     with_items:
+       - hive
+       - zookeeper
+       - ams
+       - tez
+       - ambari-qa
+       - flume
+       - hdfs
+       - yarn
+       - mapred
+       - hbase
+       - hcat
+
+   - name: Startup ambari-agent service
+     service: 
+       name: "{{item}}"
+       state: started
+     with_items:
+       - ambari-agent
+      

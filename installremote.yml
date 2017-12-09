@@ -1,4 +1,8 @@
 ---
+# Deploy ambari-server and ambari-agent
+# written by bodhi wang
+# bodwang@deloitte.com.cn
+# Dec 8, 2017
 - hosts: ambari
   become: yes
   become_user: root
@@ -10,13 +14,14 @@
        dest: /etc/yum.repos.d/ambary.repo
        url: http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.6.0.0/ambari.repo 
 
-   - name: Install openjdk/chrony.
+   - name: Install openjdk/chrony/sysstat.
      yum:
        name: "{{item}}"
        state: present
      with_items:
        - java-1.8.0-openjdk.x86_64
        - chrony
+       - sysstat
 
    - name: Set environment variable JAVA_HOME
      lineinfile:
@@ -56,6 +61,16 @@
        - /opt/hadoop/hdfs/namenode
        - /opt/hadoop/hdfs/data
      when: inventory_hostname != "r4host8.deloittecloud.com"
+
+   - name: Remove postgresql* packages  from r4host8.deloittecloud.com.
+     yum: 
+       name: "{{item}}"
+       state: absent
+     with_items:
+       - postgresql-libs-9.2.23-1.el7_4.x86_64
+       - postgresql-server-9.2.23-1.el7_4.x86_64
+       - postgresql-9.2.23-1.el7_4.x86_64
+     when: inventory_hostname == "r4host8.deloittecloud.com"
 
    - name: Install Ambari agent on hosts except r4host8.deloittecloud.com.
      yum: 
@@ -113,7 +128,7 @@
    - name: Startup ambari-server service on host r4host8.deloittecloud.com
      service: 
        name: "{{item}}"
-       state: started
+       state: restarted
        enabled: yes
      with_items:
        - ambari-server
@@ -122,7 +137,7 @@
    - name: Startup ambari-agent service
      service: 
        name: ambari-agent
-       state: started
+       state: restarted
        enabled: yes
      when: inventory_hostname != "r4host8.deloittecloud.com"
 
