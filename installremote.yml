@@ -1,4 +1,8 @@
 ---
+# Deploy ambari-server and ambari-agent
+# written by bodhi wang
+# bodwang@deloitte.com.cn
+# Dec 8, 2017
 - hosts: ambari
   become: yes
   become_user: root
