@@ -1,8 +1,4 @@
 ---
-# Deploy ambari-server and ambari-agent
-# written by bodhi wang
-# bodwang@deloitte.com.cn
-# Dec 8, 2017
 - hosts: ambari
   become: yes
   become_user: root
@@ -38,7 +34,29 @@
 
    - name: Synchronize time
      command: chronyc sources -v
+
+   - name: Stop firewalld service
+     service: 
+       name: "{{item}}"
+       state: stopped
+       enabled: no
+     with_items:
+       - firewalld
+     when: inventory_hostname != "r4host8.deloittecloud.com"
       
+   - name: Make directory /opt/hadoop on hosts except r4host8.deloittecloud.com.
+     file: 
+       path: "{{item}}"
+       owner: root
+       group: root
+       mode: 0755
+       recurse: yes
+       state: directory
+     with_items:
+       - /opt/hadoop/hdfs/namenode
+       - /opt/hadoop/hdfs/data
+     when: inventory_hostname != "r4host8.deloittecloud.com"
+
    - name: Install Ambari agent on hosts except r4host8.deloittecloud.com.
      yum: 
        name: "{{item}}"
