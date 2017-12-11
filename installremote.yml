@@ -62,6 +62,15 @@
        - /opt/hadoop/hdfs/data
      when: inventory_hostname != "r4host8.deloittecloud.com"
 
+   - name: Stop postgresql service on host ambari-server r4host8.deloittecloud.com
+     service: 
+       name: "{{item}}"
+       state: stopped
+       enabled: no
+     with_items:
+       - postgresql
+     when: inventory_hostname == "r4host8.deloittecloud.com"
+     
    - name: Remove postgresql* packages  from r4host8.deloittecloud.com.
      yum: 
        name: "{{item}}"
