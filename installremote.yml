@@ -81,7 +81,7 @@
        - postgresql-9.2.23-1.el7_4.x86_64
      when: inventory_hostname == "r4host8.xxx.com"
 
-   - name: Install Ambari agent on hosts except r4host8.xxxcom.
+   - name: Install Ambari agent on hosts except r4host8.xxx.com.
      yum: 
        name: "{{item}}"
        state: present
