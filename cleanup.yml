@@ -1,7 +1,7 @@
 ---
 # Cleanup ambari-server and ambari-agent
 # written by bodhi wang
-# bodwang@deloitte.com.cn
+# jyxz5@qq.com
 # Dec 8, 2017
 - hosts: ambari_agent
   become: yes
