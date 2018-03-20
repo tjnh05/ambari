@@ -47,9 +47,9 @@
        enabled: no
      with_items:
        - firewalld
-     when: inventory_hostname != "r4host8.deloittecloud.com"
+     when: inventory_hostname != "r4host8.xxx.com"
       
-   - name: Make directory /opt/hadoop on hosts except r4host8.deloittecloud.com.
+   - name: Make directory /opt/hadoop on hosts except r4host8.xxx.com.
      file: 
        path: "{{item}}"
        owner: root
@@ -60,18 +60,18 @@
      with_items:
        - /opt/hadoop/hdfs/namenode
        - /opt/hadoop/hdfs/data
-     when: inventory_hostname != "r4host8.deloittecloud.com"
+     when: inventory_hostname != "r4host8.xxx.com"
 
-   - name: Stop postgresql service on host ambari-server r4host8.deloittecloud.com
+   - name: Stop postgresql service on host ambari-server r4host8.xxx.com
      service: 
        name: "{{item}}"
        state: stopped
        enabled: no
      with_items:
        - postgresql
-     when: inventory_hostname == "r4host8.deloittecloud.com"
+     when: inventory_hostname == "r4host8.xxx.com"
      
-   - name: Remove postgresql* packages  from r4host8.deloittecloud.com.
+   - name: Remove postgresql* packages  from r4host8.xxx.com.
      yum: 
        name: "{{item}}"
        state: absent
@@ -79,33 +79,33 @@
        - postgresql-libs-9.2.23-1.el7_4.x86_64
        - postgresql-server-9.2.23-1.el7_4.x86_64
        - postgresql-9.2.23-1.el7_4.x86_64
-     when: inventory_hostname == "r4host8.deloittecloud.com"
+     when: inventory_hostname == "r4host8.xxx.com"
 
-   - name: Install Ambari agent on hosts except r4host8.deloittecloud.com.
+   - name: Install Ambari agent on hosts except r4host8.xxxcom.
      yum: 
        name: "{{item}}"
        state: present
      with_items:
        - ambari-agent
-     when: inventory_hostname != "r4host8.deloittecloud.com"
+     when: inventory_hostname != "r4host8.xxx.com"
 
-   - name: Install expect/ambari-server on host r4host8.deloittecloud.com.
+   - name: Install expect/ambari-server on host r4host8.xxx.com.
      yum:
        name: "{{item}}"
        state: present
      with_items:
        - expect
        - ambari-server
-     when: inventory_hostname == "r4host8.deloittecloud.com"
+     when: inventory_hostname == "r4host8.xxx.com"
 
    - name: Modify ambari-agent.ini
      lineinfile:
        path: /etc/ambari-agent/conf/ambari-agent.ini
        regexp: '^hostname='
-       line: 'hostname=r4host8.deloittecloud.com'
-     when: inventory_hostname != "r4host8.deloittecloud.com"
+       line: 'hostname=r4host8.xxx.com'
+     when: inventory_hostname != "r4host8.xxx.com"
 
-   - name: Setup Ambari server on host r4host8.deloittecloud.com.
+   - name: Setup Ambari server on host r4host8.xxx.com.
      shell: |
        set timeout 10
        spawn ambari-server setup
@@ -130,23 +130,23 @@
        exit 0
      args:
        executable: /usr/bin/expect
-     when: inventory_hostname == "r4host8.deloittecloud.com"
+     when: inventory_hostname == "r4host8.xxx.com"
      tags:
        - ambari_server_setup
 
-   - name: Startup ambari-server service on host r4host8.deloittecloud.com
+   - name: Startup ambari-server service on host r4host8.xxx.com
      service: 
        name: "{{item}}"
        state: restarted
        enabled: yes
      with_items:
        - ambari-server
-     when: inventory_hostname == "r4host8.deloittecloud.com"
+     when: inventory_hostname == "r4host8.xxx.com"
 
    - name: Startup ambari-agent service
      service: 
        name: ambari-agent
        state: restarted
        enabled: yes
-     when: inventory_hostname != "r4host8.deloittecloud.com"
+     when: inventory_hostname != "r4host8.xxx.com"
 
